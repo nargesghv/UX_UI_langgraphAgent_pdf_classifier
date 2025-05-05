@@ -6,3 +6,4 @@ langchain-openai
 openai
 pypdf
 python-docx
+python-multipart  # required for FastAPI file upload
