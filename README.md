@@ -1,13 +1,6 @@
-# LangGraph PDF Classifier (Agent-Based)
+# LangGraph PDF Classifier (Full-Stack + Agent-Based)
 
-This project is a full-stack application that allows users to upload `.pdf` or `.docx` files, which are then classified into one of the following categories using an LLM (OpenAI GPT-4):
-
-- `filling_tax`
-- `contact_client`
-- `launching_a_company`
-- `payroll`
-
-It uses LangGraph for tool-based agent orchestration, FastAPI for backend processing, and React + Tailwind for the user interface.
+This project is a full-stack AI application that lets users upload `.pdf` or `.docx` files and classify them into categories using a LangGraph agent powered by OpenAI GPT. The system includes a React frontend, a FastAPI backend, a LangGraph agent pipeline, PDF preview, and a history-saving database. An optional Streamlit dashboard is available for quick testing.
 
 ---
 
@@ -18,27 +11,55 @@ It uses LangGraph for tool-based agent orchestration, FastAPI for backend proces
 | **Frontend**  | React + Tailwind CSS                  |
 | **Backend**   | FastAPI                               |
 | **Agent**     | LangGraph + LangChain + OpenAI GPT    |
-| **Storage**   | Local file system (`incoming/`)       |
+| **Database**  | SQLite + SQLAlchemy                   |
+| **Dashboard** | Optional: Streamlit                   |
+
+---
+
+## 🧠 Features
+
+- Upload `.pdf` or `.docx` documents
+- Auto classification using GPT-4 via LangGraph agent
+- Preview uploaded PDFs
+- Save classification history to SQLite
+- Optionally use a Streamlit dashboard
 
 ---
 
 ## 📁 Project Structure
 
 ```
-langgraph_pdf_classifier/
+UX_UI_langgraphAgent_pdf_classifier/
 ├── backend/
-│   ├── main.py              # FastAPI server
-│   ├── routes.py            # /upload endpoint
-│   └── agent_runner.py      # Agent wrapper
+│   ├── main.py              # FastAPI app entry
+│   ├── routes.py            # /upload route
+│   ├── agent_runner.py      # LangGraph agent wrapper
+│   └── db/
+│       ├── models.py        # SQLAlchemy ORM models
+│       ├── crud.py          # Create/read database records
+│       └── database.py      # DB engine + session factory
+│
 ├── pipeline/
-│   └── graph.py             # LangGraph agent with tool calling
+│   └── graph.py             # LangGraph agent and tools
+│
 ├── utils/
-│   └── file_watch.py        # Real-time file monitor
+│   └── file_watch.py        # Local folder watcher (optional)
+│
 ├── frontend/
-│   └── ...                  # React frontend for uploading files
-├── incoming/                # Folder where uploaded files are stored
+│   ├── src/
+│   │   ├── App.js           # Upload + preview UI
+│   │   ├── api.js           # Axios API helper
+│   │   ├── index.js         # React entry point
+│   │   ├── index.css        # Tailwind styles
+│   │   └── components/
+│   │       └── Preview.js   # PDF preview using react-pdf
+│   └── tailwind.config.js   # Tailwind config
+│
+├── streamlit_app.py         # Python UI for quick testing
+├── incoming/                # Folder to store uploaded files
 ├── requirements.txt         # Backend dependencies
-└── README.md                # This file
+├── README.md                # Project overview
+└── DOCUMENTATION.md         # Technical documentation
 ```
 
 ---
@@ -60,27 +81,22 @@ npm install
 npm start
 ```
 
-> Make sure your FastAPI backend is running on `http://localhost:8000`
+### 3. Optional: Streamlit UI
 
----
-
-## 🧠 Agent Behavior
-
-The backend sends uploaded files to an LLM agent built with LangGraph. The agent:
-- Uses tools to extract text from PDF or DOCX
-- Uses GPT-4 to classify the content
-- Returns a category name only
-
----
-
-## 📦 Sample Output
-
-```
-Watching for files in 'incoming/' directory...
-File: invoice.docx classified as: payroll
+```bash
+streamlit run streamlit_app.py
 ```
 
 ---
+
+## 🧪 Sample Output
+
+```json
+{
+  "filename": "report.docx",
+  "classification": "contact_client"
+}
+```
 
 ## 📄 License
 
